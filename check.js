@@ -2,12 +2,13 @@
 const assert = require('assert');
 const src = require('fs').readFileSync(__dirname + '/data.js', 'utf8');
 eval(src + ';globalThis.Q = QUIZ; globalThis.C = CARDS');
-// a LaTeX backslash inside '...' is eaten by JS ('\chi' -> 'chi'); card text with LaTeX must use T`...`
-assert(!/\b[tfn]: '[^'\n]*\\/.test(src), 'card text with LaTeX must use T`...`, not quotes');
+// a LaTeX backslash inside '...' or "..." is eaten by JS ('\chi' -> 'chi'), so any text with LaTeX must use T`...`
+assert(!/\\/.test(src.replace(/T`[^`]*`/g, '')), 'text with LaTeX must use T`...`, not quotes');
 Q.forEach((q, i) => {
   assert(q.w >= 1 && q.w <= 12, `quiz ${i}: bad week`);
   assert(q.q && q.why, `quiz ${i}: missing question/why`);
   assert(q.o.length >= 2 && q.a >= 0 && q.a < q.o.length, `quiz ${i}: bad options/answer`);
+  assert([q.q, ...q.o, q.why, q.trap || ''].every(s => !/<su[bp]>/.test(s) && (s.match(/\$/g) || []).length % 2 === 0), `quiz ${i}: math must be $LaTeX$ with paired $, not <sub>/<sup>`);
 });
 C.forEach((c, i) => {
   assert(c.w >= 1 && c.w <= 12 && c.t && c.f, `card ${i}: bad card`);

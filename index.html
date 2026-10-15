@@ -31,7 +31,6 @@
   button:active:not(:disabled) { transform: scale(.98); }
   :focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
   header :focus-visible, .weeks :focus-visible { outline-color: var(--paper); }
-  sub, sup { font-size: .7em; line-height: 0; }
 
   header, main, footer { width: min(640px, 100% - 24px); margin-inline: auto; }
 
@@ -169,8 +168,8 @@ function renderQ() {
   view.innerHTML = `
     <div class="meta"><span>${i + 1} / ${deck.length} · Week ${q.w}</span><span>${score} correct</span></div>
     <div class="bar"><i style="width:${i / deck.length * 100}%"></i></div>
-    <p class="q">${q.q}</p>
-    <div class="opts">${order(q).map(n => `<button class="opt" data-n="${n}">${q.o[n]}</button>`).join('')}</div>
+    <p class="q">${inline(q.q)}</p>
+    <div class="opts">${order(q).map(n => `<button class="opt" data-n="${n}">${inline(q.o[n])}</button>`).join('')}</div>
     <div id="after"></div>`;
 }
 view.onclick = e => {
@@ -193,8 +192,8 @@ function answer(n) {
   });
   $('#after').innerHTML = `
     <div class="why">
-      <p>${n === q.a ? '<b>Correct.</b> ' : '<b>Not quite.</b> '}${q.why}</p>
-      ${q.trap ? `<p><span class="trap">Trap:</span> ${q.trap}</p>` : ''}
+      <p>${n === q.a ? '<b>Correct.</b> ' : '<b>Not quite.</b> '}${inline(q.why)}</p>
+      ${q.trap ? `<p><span class="trap">Trap:</span> ${inline(q.trap)}</p>` : ''}
       <p class="src">Week ${q.w}${q.p ? ' · PDF p' + q.p : ''}</p>
     </div>
     <div class="row"><button class="btn" id="next">${i + 1 < deck.length ? 'Next' : 'See score'}</button></div>`;
