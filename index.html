@@ -39,6 +39,8 @@
   .mode { display: flex; }
   .mode button { min-height: 44px; padding: 0 18px; font-weight: 500; background: none; }
   .mode button[aria-pressed=true] { background: var(--paper); color: var(--ink); }
+  /* three modes don't fit beside the name on a phone, so they take a full-width row of their own */
+  @media (max-width: 480px) { header { flex-wrap: wrap; padding-bottom: 20px; } .mode { width: 100%; } .mode button { flex: 1; padding: 0 8px; } }
 
   .weeks { display: flex; align-items: flex-end; gap: 4px; overflow-x: auto; scrollbar-width: none; }
   .weeks::-webkit-scrollbar { display: none; }
@@ -53,7 +55,7 @@
   }
 
   /* svh, not dvh: dvh grows as the phone's address bar hides, which stretched the sheet mid-scroll */
-  .sheet { background: var(--paper); padding: var(--pad); min-height: calc(100svh - 100px); }
+  .sheet { background: var(--paper); padding: var(--pad); min-height: calc(100svh - 100px); overflow-x: clip; }
   .meta { display: flex; justify-content: space-between; gap: 12px; font-size: var(--step-small); color: var(--muted); margin: 0 0 12px; }
   .bar { height: 6px; background: var(--surface); }
   .bar i { display: block; height: 100%; background: var(--ink); }
@@ -61,6 +63,14 @@
   .q { font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; margin: 40px 0 32px; text-wrap: pretty; }
   .opts { display: grid; gap: 6px; }
   .opt { text-align: left; background: var(--surface); padding: 16px 18px; min-height: 56px; line-height: 1.4; }
+  .opt .ltr { font-weight: 600; margin-right: 10px; }
+  /* assignment questions can carry a small data table */
+  .q table { display: block; overflow-x: auto; border-collapse: collapse; margin-top: 16px;
+    font-size: var(--step-body); font-weight: 400; letter-spacing: 0; line-height: 1.4; }
+  .q th, .q td { padding: 6px 16px 6px 0; text-align: left; vertical-align: top; }
+  .q th { font-weight: 600; border-bottom: 2px solid var(--ink); }
+  .q th:last-child, .q td:last-child { padding-right: 0; }
+  @media (max-width: 480px) { .q table { font-size: var(--step-small); } .q th, .q td { padding-right: 6px; } }
   .opt.right { background: var(--field); color: var(--paper); font-weight: 500; }
   .opt.wrong { color: var(--muted); text-decoration: line-through 2px; }
   .opt:disabled { cursor: default; }
@@ -113,6 +123,7 @@
   <div class="mode" role="group" aria-label="Mode">
     <button id="mQuiz" aria-pressed="true">Quiz</button>
     <button id="mCards" aria-pressed="false">Cards</button>
+    <button id="mAssign" aria-pressed="false">Assignment</button>
   </div>
 </header>
 <main>
@@ -121,10 +132,11 @@
 </main>
 <footer>
   <p class="bye">You've got this.</p>
-  <p class="course">Statistical Learning for Reliability Analysis · 12 weeks · theory only</p>
+  <p class="course">Statistical Learning for Reliability Analysis · 12 weeks · 12 assignments</p>
 </footer>
 
 <script src="data.js"></script>
+<script src="assign.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
 <script>
 const $ = s => document.querySelector(s);
@@ -135,15 +147,17 @@ let cards = [], ci = 0, flipped = false;
 
 const shuffle = a => { for (let j = a.length - 1; j > 0; j--) { const k = Math.random() * (j + 1) | 0; [a[j], a[k]] = [a[k], a[j]]; } return a; };
 const pick = list => list.filter(x => !week || x.w === week);
-// shuffle options so the answer isn't always in the same slot; keep True/False pairs in order
-const order = q => { const ix = q.o.map((_, n) => n); return q.o.length > 2 ? shuffle(ix) : ix; };
+// shuffle options so the answer isn't always in the same slot; keep True/False pairs in order.
+// Assignments keep their a–d order: options like "Both a and b" refer to it.
+const order = q => { const ix = q.o.map((_, n) => n); return q.o.length > 2 && mode !== 'assign' ? shuffle(ix) : ix; };
+const where = q => q.n ? `Assignment ${q.w} · Q${q.n}` : `Week ${q.w}`;
 // card formulas are LaTeX; if KaTeX didn't load (offline) the raw TeX still shows
 const tex = (s, display) => window.katex ? katex.renderToString(s, { displayMode: display, throwOnError: false }) : s;
 const inline = s => s.replace(/\$(.+?)\$/g, (_, m) => tex(m, false));
 
 function weeks() {
   $('#weeks').innerHTML = ['All', ...Array.from({ length: 12 }, (_, n) => n + 1)]
-    .map((t, n) => `<button aria-pressed="${n === week}" data-w="${n}"${n ? ` aria-label="Week ${t}"` : ''}>${t}</button>`).join('');
+    .map((t, n) => `<button aria-pressed="${n === week}" data-w="${n}"${n ? ` aria-label="${mode === 'assign' ? 'Assignment' : 'Week'} ${t}"` : ''}>${t}</button>`).join('');
   const on = $('#weeks [aria-pressed=true]');
   $('#weeks').scrollLeft = on.offsetLeft - ($('#weeks').clientWidth - on.offsetWidth) / 2; // centre the chosen week
   fade();
@@ -158,19 +172,25 @@ addEventListener('resize', fade);
 $('#weeks').onclick = e => { const b = e.target.closest('button'); if (!b) return; week = +b.dataset.w; weeks(); start(); };
 $('#mQuiz').onclick = () => setMode('quiz');
 $('#mCards').onclick = () => setMode('cards');
-function setMode(m) { mode = m; $('#mQuiz').ariaPressed = m === 'quiz'; $('#mCards').ariaPressed = m === 'cards'; start(); }
-function start() { mode === 'quiz' ? startQuiz(pick(QUIZ)) : startCards(); scrollTo(0, 0); }
+$('#mAssign').onclick = () => setMode('assign');
+function setMode(m) {
+  mode = m;
+  $('#mQuiz').ariaPressed = m === 'quiz'; $('#mCards').ariaPressed = m === 'cards'; $('#mAssign').ariaPressed = m === 'assign';
+  weeks(); start();
+}
+function start() { mode === 'cards' ? startCards() : startQuiz(pick(mode === 'quiz' ? QUIZ : ASSIGN)); scrollTo(0, 0); }
 
-function startQuiz(list) { deck = shuffle(list.slice()); i = 0; score = 0; wrong = []; renderQ(); }
+// an assignment runs in its real question order; the theory quiz is shuffled
+function startQuiz(list) { deck = mode === 'assign' ? list.slice() : shuffle(list.slice()); i = 0; score = 0; wrong = []; renderQ(); }
 function renderQ() {
   if (!deck.length) { view.innerHTML = '<p class="sub">No questions for this week.</p>'; return; }
   if (i >= deck.length) return renderEnd();
   const q = deck[i]; done = false;
   view.innerHTML = `
-    <div class="meta"><span>${i + 1} / ${deck.length} · Week ${q.w}</span><span>${score} correct</span></div>
+    <div class="meta"><span>${i + 1} / ${deck.length} · ${where(q)}</span><span>${score} correct</span></div>
     <div class="bar"><i style="width:${i / deck.length * 100}%"></i></div>
-    <p class="q">${inline(q.q)}</p>
-    <div class="opts">${order(q).map(n => `<button class="opt" data-n="${n}">${inline(q.o[n])}</button>`).join('')}</div>
+    <div class="q">${inline(q.q)}</div>
+    <div class="opts">${order(q).map(n => `<button class="opt" data-n="${n}">${mode === 'assign' ? `<span class="ltr">${'abcdef'[n]}.</span>` : ''}${inline(q.o[n])}</button>`).join('')}</div>
     <div id="after"></div>`;
 }
 view.onclick = e => {
@@ -195,7 +215,7 @@ function answer(n) {
     <div class="why">
       <p>${n === q.a ? '<b>Correct.</b> ' : '<b>Not quite.</b> '}${inline(q.why)}</p>
       ${q.trap ? `<p><span class="trap">Trap:</span> ${inline(q.trap)}</p>` : ''}
-      <p class="src">Week ${q.w}${q.p ? ' · PDF p' + q.p : ''}</p>
+      <p class="src">${where(q)}${q.p ? ' · PDF p' + q.p : ''}</p>
     </div>
     <div class="row"><button class="btn" id="next">${i + 1 < deck.length ? 'Next' : 'See score'}</button></div>`;
   $('#next').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); // keep "why" + Next on screen
