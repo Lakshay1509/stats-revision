@@ -1,6 +1,8 @@
 // Quiz: w = week, q = question, o = options, a = index of correct option, why/trap = feedback, p = PDF page.
-// Cards: w = week, t = name (front), f = formula (back), n = one-line meaning.
+// Cards: w = week, t = name (front), f = LaTeX formula, or a list of lines (back), n = one-line meaning.
+// In t and n, $...$ is inline math. Formulas are rendered by KaTeX in index.html.
 const QUIZ = [], CARDS = [];
+const T = String.raw; // keeps LaTeX backslashes as typed
 
 // ── Week 1: reliability intro, data & descriptive stats, probability, conditional/Bayes ──
 QUIZ.push(
@@ -55,19 +57,19 @@ QUIZ.push(
     why: 'Combination = order irrelevant (e.g. picking a team). Permutation = order matters (e.g. chair + treasurer).' },
 );
 CARDS.push(
-  { w: 1, t: 'Classical probability', f: 'P(A) = m / n', n: 'm favourable outcomes out of n equally likely outcomes.' },
-  { w: 1, t: 'Complement rule', f: 'P(Aᶜ) = 1 − P(A)', n: 'Probability that A does NOT happen.' },
-  { w: 1, t: 'Addition rule (union)', f: 'P(A∪B) = P(A) + P(B) − P(A∩B)', n: 'If mutually exclusive, P(A∩B) = 0 so just add.' },
-  { w: 1, t: 'Conditional probability', f: 'P(B|A) = P(A∩B) / P(A)', n: 'Needs P(A) ≠ 0. Independent ⇒ P(B|A) = P(B).' },
-  { w: 1, t: 'Multiplication rule', f: 'P(A∩B) = P(A) · P(B|A)', n: 'Independent ⇒ P(A∩B) = P(A) · P(B).' },
-  { w: 1, t: 'Theorem of total probability', f: 'P(A) = Σ P(A|Bᵢ) · P(Bᵢ)', n: 'Bᵢ form a partition of the sample space.' },
-  { w: 1, t: "Bayes' theorem", f: 'P(B<sub>r</sub>|A) = P(A|B<sub>r</sub>) P(B<sub>r</sub>) / Σ P(A|Bᵢ) P(Bᵢ)', n: '"Reverse" probability: which cause, given the effect.' },
-  { w: 1, t: 'Permutation', f: '<sub>n</sub>P<sub>r</sub> = n! / (n − r)!', n: 'Order matters.' },
-  { w: 1, t: 'Combination', f: '<sub>n</sub>C<sub>r</sub> = n! / (r! (n − r)!)', n: 'Order does not matter.' },
-  { w: 1, t: 'Permutations with repeated kinds', f: 'n! / (n₁! n₂! … n<sub>k</sub>!)', n: 'n things, n₁ of one kind, n₂ of another, …' },
-  { w: 1, t: 'Sample variance', f: 's² = Σ (xᵢ − x̄)² / (n − 1)', n: 'Standard deviation = √variance.' },
-  { w: 1, t: 'Availability', f: 'Availability = actual working time / scheduled working time × 100%', n: 'Probability the system is ready to use.' },
-  { w: 1, t: 'Empirical reliability', f: 'R = 1 − N<sub>f</sub> / N', n: 'N<sub>f</sub> failed out of N tested by time t.' },
+  { w: 1, t: 'Classical probability', f: T`P(A) = \frac{m}{n}`, n: T`$m$ = favourable outcomes, $n$ = all equally likely outcomes.` },
+  { w: 1, t: 'Complement rule', f: T`P(A^c) = 1 - P(A)`, n: T`Chance that A does NOT happen.` },
+  { w: 1, t: 'Addition rule (union)', f: T`\begin{aligned} P(A \cup B) &= P(A) + P(B) \\ &\quad - P(A \cap B) \end{aligned}`, n: T`Mutually exclusive: $P(A \cap B) = 0$, so just add.` },
+  { w: 1, t: 'Conditional probability', f: T`P(B \mid A) = \frac{P(A \cap B)}{P(A)}`, n: T`Chance of B given A has happened. Independent: $P(B \mid A) = P(B)$.` },
+  { w: 1, t: 'Multiplication rule', f: T`P(A \cap B) = P(A)\,P(B \mid A)`, n: T`Independent: $P(A \cap B) = P(A)\,P(B)$.` },
+  { w: 1, t: 'Theorem of total probability', f: T`P(A) = \sum_i P(A \mid B_i)\,P(B_i)`, n: T`The $B_i$ split the sample space into parts that do not overlap.` },
+  { w: 1, t: "Bayes' theorem", f: [T`P(B_r \mid A) = \frac{P(A \mid B_r)\,P(B_r)}{P(A)}`, T`P(A) = \sum_i P(A \mid B_i)\,P(B_i)`], n: T`"Reverse" probability: which cause, given the effect.` },
+  { w: 1, t: 'Permutation', f: T`{}^nP_r = \frac{n!}{(n-r)!}`, n: T`Order matters.` },
+  { w: 1, t: 'Combination', f: T`{}^nC_r = \frac{n!}{r!\,(n-r)!}`, n: T`Order does not matter.` },
+  { w: 1, t: 'Permutations with repeated kinds', f: T`\frac{n!}{n_1!\,n_2!\cdots n_k!}`, n: T`$n$ things: $n_1$ alike of one kind, $n_2$ alike of another, …` },
+  { w: 1, t: 'Sample variance', f: T`s^2 = \frac{\sum (x_i - \bar{x})^2}{n-1}`, n: T`Divide by $n-1$, not $n$. Standard deviation $s = \sqrt{s^2}$.` },
+  { w: 1, t: 'Availability', f: T`A = \frac{\text{working time}}{\text{scheduled time}}`, n: T`Actual working time over scheduled working time; × 100 for a percent. Chance the system is ready to use.` },
+  { w: 1, t: 'Empirical reliability', f: T`R = 1 - \frac{N_f}{N}`, n: T`$N_f$ = number failed by time $t$, out of $N$ tested.` },
 );
 
 // ── Week 2: conditional-probability tutorial, random variables, discrete distributions ──
@@ -119,16 +121,16 @@ QUIZ.push(
     why: 'Multinomial = binomial generalised to k outcome categories, n independent trials.' },
 );
 CARDS.push(
-  { w: 2, t: 'Expected value E(X)', f: 'E(X) = Σ x·f(x)   or   ∫ x·f(x) dx', n: 'Sum for discrete, integral for continuous.' },
-  { w: 2, t: 'Variance shortcut', f: 'σ² = E(X²) − μ²', n: 'Also σ² = E[(X − μ)²].' },
-  { w: 2, t: 'Linear rules for E and Var', f: 'E(a + bX) = a + b·E(X)<br>Var(a + bX) = b²·Var(X)', n: 'Var(X ± Y) = Var(X) + Var(Y) if independent (always +).' },
-  { w: 2, t: "Chebyshev's theorem", f: 'P(μ − kσ < X < μ + kσ) ≥ 1 − 1/k²', n: 'Any distribution. Lower bound only.' },
-  { w: 2, t: 'Binomial', f: 'f(x) = C(n, x) pˣ (1 − p)ⁿ⁻ˣ<br>μ = np,  σ² = np(1 − p)', n: 'x successes in n independent trials, constant p.' },
-  { w: 2, t: 'Hypergeometric', f: 'f(x) = C(k, x)·C(N − k, n − x) / C(N, n)<br>μ = nk/N', n: 'Without replacement; k successes among N items.' },
-  { w: 2, t: 'Negative binomial', f: 'b*(x; k, p) = C(x − 1, k − 1) pᵏ qˣ⁻ᵏ', n: 'Trial x on which the k-th success happens.' },
-  { w: 2, t: 'Geometric', f: 'g(x; p) = p·qˣ⁻¹', n: 'Trial x on which the FIRST success happens.' },
-  { w: 2, t: 'Poisson', f: 'f(x) = e<sup>−λt</sup> (λt)ˣ / x!<br>μ = σ² = λt', n: 'Count of events in time t at rate λ.' },
-  { w: 2, t: 'Discrete uniform (1…k)', f: 'f(x) = 1/k<br>μ = (k + 1)/2,  σ² = (k² − 1)/12', n: 'All k integers equally likely.' },
+  { w: 2, t: 'Expected value E(X)', f: [T`E(X) = \sum x\,f(x)`, T`E(X) = \int x\,f(x)\,dx`], n: T`Sum if discrete, integral if continuous.` },
+  { w: 2, t: 'Variance shortcut', f: T`\sigma^2 = E(X^2) - \mu^2`, n: T`Mean of the square minus the square of the mean.` },
+  { w: 2, t: 'Linear rules for E and Var', f: [T`E(a + bX) = a + b\,E(X)`, T`\text{Var}(a + bX) = b^2\,\text{Var}(X)`], n: T`Adding $a$ moves the mean only. Independent: $\text{Var}(X \pm Y) = \text{Var}(X) + \text{Var}(Y)$, always plus.` },
+  { w: 2, t: "Chebyshev's theorem", f: T`P(|X - \mu| < k\sigma) \ge 1 - \frac{1}{k^2}`, n: T`Same as $P(\mu - k\sigma < X < \mu + k\sigma)$. Any distribution: at least this much lies within $k$ SDs of the mean.` },
+  { w: 2, t: 'Binomial', f: [T`f(x) = \binom{n}{x} p^x (1-p)^{n-x}`, T`\mu = np, \quad \sigma^2 = np(1-p)`], n: T`$x$ successes in $n$ independent trials, success chance $p$ each time.` },
+  { w: 2, t: 'Hypergeometric', f: [T`f(x) = \frac{\binom{k}{x}\binom{N-k}{n-x}}{\binom{N}{n}}`, T`\mu = \frac{nk}{N}`], n: T`Draw $n$ without replacement from $N$ items, $k$ of which are successes.` },
+  { w: 2, t: 'Negative binomial', f: T`b^*(x; k, p) = \binom{x-1}{k-1} p^k q^{x-k}`, n: T`Chance the $k$-th success comes on trial $x$. Here $q = 1 - p$.` },
+  { w: 2, t: 'Geometric', f: T`g(x; p) = p\,q^{x-1}`, n: T`Chance the FIRST success comes on trial $x$. Here $q = 1 - p$.` },
+  { w: 2, t: 'Poisson', f: [T`f(x) = \frac{e^{-\lambda t}(\lambda t)^x}{x!}`, T`\mu = \sigma^2 = \lambda t`], n: T`Number of events in time $t$ at rate $\lambda$. Mean = variance.` },
+  { w: 2, t: 'Discrete uniform (1 to k)', f: [T`f(x) = \frac{1}{k}`, T`\mu = \frac{k+1}{2}, \quad \sigma^2 = \frac{k^2-1}{12}`], n: T`Values $1, 2, \dots, k$, all equally likely.` },
 );
 
 // ── Week 3: discrete tutorial, uniform/normal, gamma/exponential/lognormal/Weibull ──
@@ -180,16 +182,16 @@ QUIZ.push(
     why: 'Variances of independent variables ADD, even for a difference. Mean = μ<sub>Y</sub> − μ<sub>X</sub>.' },
 );
 CARDS.push(
-  { w: 3, t: 'Continuous uniform [A, B]', f: 'f(x) = 1/(B − A)<br>μ = (A + B)/2,  σ² = (B − A)²/12', n: 'Flat density across the interval.' },
-  { w: 3, t: 'Normal pdf', f: 'f(x) = (1 / σ√(2π)) · e<sup>−(x − μ)² / 2σ²</sup>', n: 'Bell curve, symmetric about μ.' },
-  { w: 3, t: 'Z-transformation', f: 'z = (x − μ) / σ', n: 'Standard normal: mean 0, variance 1.' },
-  { w: 3, t: 'Gamma function', f: 'Γ(n) = (n − 1)!<br>Γ(1) = 1,  Γ(½) = √π', n: 'Recursive: Γ(α) = (α − 1)·Γ(α − 1).' },
-  { w: 3, t: 'Gamma distribution', f: 'f(x) = x<sup>α−1</sup> e<sup>−x/β</sup> / (β<sup>α</sup> Γ(α))<br>μ = αβ,  σ² = αβ²', n: 'Wait time until the α-th (k-th) Poisson event.' },
-  { w: 3, t: 'Exponential distribution', f: 'f(x) = (1/β) e<sup>−x/β</sup> = λe<sup>−λx</sup><br>μ = β,  σ² = β²', n: 'λ = 1/β = failure rate. Memoryless.' },
-  { w: 3, t: 'Exponential reliability', f: 'R(t) = e<sup>−λt</sup>,   F(t) = 1 − e<sup>−λt</sup>', n: 'Constant failure rate λ.' },
-  { w: 3, t: 'Lognormal mean & variance', f: 'μ = e<sup>μ + σ²/2</sup><br>σ² = e<sup>2μ + σ²</sup>(e<sup>σ²</sup> − 1)', n: 'ln(X) ~ Normal(μ, σ). Positive values only.' },
-  { w: 3, t: 'Weibull reliability', f: 'R(t) = e<sup>−((t − γ)/η)<sup>β</sup></sup>', n: 'η = scale (characteristic life), β = shape, γ = location.' },
-  { w: 3, t: 'Weibull MTTF', f: 'MTTF = γ + η·Γ(1/β + 1)', n: 'Mean of the Weibull life distribution.' },
+  { w: 3, t: 'Continuous uniform [A, B]', f: [T`f(x) = \frac{1}{B-A}`, T`\mu = \frac{A+B}{2}, \quad \sigma^2 = \frac{(B-A)^2}{12}`], n: T`Flat density between $A$ and $B$.` },
+  { w: 3, t: 'Normal pdf', f: [T`f(x) = \frac{1}{\sigma\sqrt{2\pi}}\,e^{-z^2/2}`, T`z = \frac{x-\mu}{\sigma}`], n: T`Bell curve, symmetric about $\mu$.` },
+  { w: 3, t: 'Z-transformation', f: T`z = \frac{x-\mu}{\sigma}`, n: T`Turns any normal into the standard normal: mean 0, variance 1.` },
+  { w: 3, t: 'Gamma function', f: [T`\Gamma(n) = (n-1)!`, T`\Gamma(1) = 1, \quad \Gamma(\tfrac{1}{2}) = \sqrt{\pi}`], n: T`In general $\Gamma(\alpha) = (\alpha-1)\,\Gamma(\alpha-1)$.` },
+  { w: 3, t: 'Gamma distribution', f: [T`f(x) = \frac{x^{\alpha-1}\,e^{-x/\beta}}{\beta^\alpha\,\Gamma(\alpha)}`, T`\mu = \alpha\beta, \quad \sigma^2 = \alpha\beta^2`], n: T`Waiting time until the $\alpha$-th Poisson event.` },
+  { w: 3, t: 'Exponential distribution', f: [T`f(x) = \frac{1}{\beta}\,e^{-x/\beta} = \lambda e^{-\lambda x}`, T`\mu = \beta, \quad \sigma^2 = \beta^2`], n: T`$\lambda = 1/\beta$ = failure rate. Memoryless.` },
+  { w: 3, t: 'Exponential reliability', f: [T`R(t) = e^{-\lambda t}`, T`F(t) = 1 - e^{-\lambda t}`], n: T`$R$ = chance it survives past $t$, $F$ = chance it fails by $t$. Constant failure rate $\lambda$.` },
+  { w: 3, t: 'Lognormal mean & variance', f: [T`E(X) = e^{\mu + \sigma^2/2}`, T`\text{Var}(X) = e^{2\mu + \sigma^2}\left(e^{\sigma^2} - 1\right)`], n: T`$\mu$, $\sigma$ belong to $\ln X$, which is normal. Positive values only.` },
+  { w: 3, t: 'Weibull reliability', f: T`R(t) = e^{-(t/\eta)^\beta}`, n: T`$\eta$ = scale (characteristic life), $\beta$ = shape. With a location $\gamma$, put $t - \gamma$ in place of $t$.` },
+  { w: 3, t: 'Weibull MTTF', f: T`\text{MTTF} = \eta\,\Gamma\!\left(1 + \frac{1}{\beta}\right)`, n: T`Mean life. With a location $\gamma$, add $\gamma$.` },
 );
 
 // ── Week 4: sampling distributions, CLT, χ², t, F, sample proportion ──
@@ -238,15 +240,15 @@ QUIZ.push(
     trap: 'np and np(1 − p) are for the COUNT X, not the proportion.' },
 );
 CARDS.push(
-  { w: 4, t: 'Sampling distribution of x̄', f: 'μ<sub>x̄</sub> = μ,   σ²<sub>x̄</sub> = σ²/n', n: 'Standard error = σ/√n.' },
-  { w: 4, t: 'CLT z-score', f: 'Z = (x̄ − μ) / (σ/√n)', n: 'Approximately standard normal for large n.' },
-  { w: 4, t: 'Difference of two means', f: 'μ = μ₁ − μ₂<br>σ² = σ₁²/n₁ + σ₂²/n₂', n: 'Independent samples; approximately normal.' },
-  { w: 4, t: 'χ² for sample variance', f: 'χ² = (n − 1)S² / σ²,   df = n − 1', n: 'χ² mean = ν, variance = 2ν.' },
-  { w: 4, t: 't statistic', f: 'T = (x̄ − μ) / (S/√n),   df = n − 1', n: 'Definition: t = Z / √(χ²/ν).' },
-  { w: 4, t: 'F statistic', f: 'F = (S₁²/σ₁²) / (S₂²/σ₂²)', n: 'Definition: F = (χ₁²/v₁) / (χ₂²/v₂).' },
-  { w: 4, t: 'F reciprocal property', f: 'f<sub>1−α</sub>(v₁, v₂) = 1 / f<sub>α</sub>(v₂, v₁)', n: 'Swap the df and flip.' },
-  { w: 4, t: 'Sample proportion p̂', f: 'E(p̂) = p,   Var(p̂) = p(1 − p)/n', n: 'Approximately N(p, p(1 − p)/n) for large n.' },
-  { w: 4, t: 'Reproductive property (normal)', f: 'Y = Σ aᵢXᵢ → μ<sub>Y</sub> = Σ aᵢμᵢ,  σ²<sub>Y</sub> = Σ aᵢ²σᵢ²', n: 'A linear combination of independent normals is normal.' },
+  { w: 4, t: T`Sampling distribution of $\bar{x}$`, f: [T`\mu_{\bar{x}} = \mu`, T`\sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}}`], n: T`$\sigma/\sqrt{n}$ is the standard error. Variance $= \sigma^2/n$.` },
+  { w: 4, t: 'CLT z-score', f: T`Z = \frac{\bar{x} - \mu}{\sigma/\sqrt{n}}`, n: T`Close to standard normal for large $n$.` },
+  { w: 4, t: 'Difference of two means', f: [T`\mu_{\bar{x}_1 - \bar{x}_2} = \mu_1 - \mu_2`, T`\sigma^2_{\bar{x}_1 - \bar{x}_2} = \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}`], n: T`Independent samples. The variances add.` },
+  { w: 4, t: T`$\chi^2$ for sample variance`, f: T`\chi^2 = \frac{(n-1)S^2}{\sigma^2}, \quad \nu = n-1`, n: T`A $\chi^2$ with $\nu$ df has mean $\nu$ and variance $2\nu$.` },
+  { w: 4, t: 't statistic', f: T`T = \frac{\bar{x} - \mu}{S/\sqrt{n}}, \quad \nu = n-1`, n: T`Like $Z$, but the sample $S$ stands in for $\sigma$. By definition $T = Z/\sqrt{\chi^2/\nu}$.` },
+  { w: 4, t: 'F statistic', f: T`F = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}`, n: T`By definition $F = \dfrac{\chi_1^2/\nu_1}{\chi_2^2/\nu_2}$.` },
+  { w: 4, t: 'F reciprocal property', f: T`f_{1-\alpha}(\nu_1, \nu_2) = \frac{1}{f_\alpha(\nu_2, \nu_1)}`, n: T`Swap the two df and flip.` },
+  { w: 4, t: T`Sample proportion $\hat{p}$`, f: [T`E(\hat{p}) = p`, T`\text{Var}(\hat{p}) = \frac{p(1-p)}{n}`], n: T`Roughly normal for large $n$.` },
+  { w: 4, t: 'Reproductive property (normal)', f: [T`Y = \sum a_i X_i`, T`\mu_Y = \sum a_i \mu_i, \quad \sigma_Y^2 = \sum a_i^2 \sigma_i^2`], n: T`Independent normals in, normal out. The $a_i$ get squared in the variance.` },
 );
 
 // ── Week 5: sampling tutorial, hypothesis testing, errors, p-values, OC & power ──
@@ -299,12 +301,12 @@ QUIZ.push(
     why: 'H₀ is the "do nothing, spend nothing" option; wrongly abandoning it is usually the expensive mistake.' },
 );
 CARDS.push(
-  { w: 5, t: 'α (Type I error)', f: 'α = P(reject H₀ | H₀ true)', n: 'Significance level. False alarm.' },
-  { w: 5, t: 'β and power', f: 'β = P(accept H₀ | H₀ false)<br>Power = 1 − β', n: 'Power = chance of correctly rejecting a false H₀.' },
-  { w: 5, t: 'Z test for a mean (σ known)', f: 'Z = (x̄ − μ₀) / (σ/√n)', n: 'Two-tailed: reject if |Z| > z<sub>α/2</sub>.' },
-  { w: 5, t: 't test for a mean (σ unknown)', f: 't = (x̄ − μ₀) / (S/√n),   df = n − 1', n: 'Small samples, S replaces σ.' },
-  { w: 5, t: 'Common z critical values', f: 'Two-tailed: α = 0.05 → ±1.96,  α = 0.01 → ±2.576<br>One-tailed: α = 0.05 → 1.645', n: 'Memorise these three.' },
-  { w: 5, t: 'p-value decision rule', f: 'Reject H₀ if p ≤ α', n: 'Small p = strong evidence against H₀.' },
+  { w: 5, t: T`$\alpha$ (Type I error)`, f: T`\alpha = P(\text{reject } H_0 \mid H_0 \text{ true})`, n: T`A false alarm. Also called the significance level.` },
+  { w: 5, t: T`$\beta$ and power`, f: [T`\beta = P(\text{accept } H_0 \mid H_0 \text{ false})`, T`\text{Power} = 1 - \beta`], n: T`$\beta$ = a miss (Type II). Power = chance of catching a false $H_0$.` },
+  { w: 5, t: T`Z test for a mean ($\sigma$ known)`, f: T`Z = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}`, n: T`Two-tailed: reject $H_0$ if $|Z| > z_{\alpha/2}$.` },
+  { w: 5, t: T`t test for a mean ($\sigma$ unknown)`, f: T`t = \frac{\bar{x} - \mu_0}{S/\sqrt{n}}, \quad \nu = n-1`, n: T`Small samples: $S$ stands in for $\sigma$.` },
+  { w: 5, t: 'Common z critical values', f: [T`\text{two-tailed } \alpha = 0.05 \;\to\; \pm 1.96`, T`\text{two-tailed } \alpha = 0.01 \;\to\; \pm 2.576`, T`\text{one-tailed } \alpha = 0.05 \;\to\; 1.645`], n: T`Memorise these three.` },
+  { w: 5, t: 'p-value decision rule', f: T`\text{reject } H_0 \text{ if } p \le \alpha`, n: T`Small $p$ = strong evidence against $H_0$.` },
 );
 
 // ── Week 6: confidence intervals, proportion & variance inference, two populations ──
@@ -358,17 +360,17 @@ QUIZ.push(
     why: 'Also key in quality control where consistency (low variance) matters. F = s₁²/s₂².' },
 );
 CARDS.push(
-  { w: 6, t: 'CI for μ (σ known)', f: 'x̄ ± z<sub>α/2</sub> · σ/√n', n: '95% → z = 1.96.' },
-  { w: 6, t: 'CI for μ (σ unknown)', f: 'x̄ ± t<sub>α/2</sub> · s/√n,   df = n − 1', n: 'Same shape, s replaces σ.' },
-  { w: 6, t: 'Margin of error', f: 'E = z<sub>α/2</sub> · σ/√n', n: 'Half the width of the CI.' },
-  { w: 6, t: 'Sample size for a given E', f: 'n = (z<sub>α/2</sub> · σ / E)²', n: 'Round UP.' },
-  { w: 6, t: 'CI for a proportion', f: 'p̂ ± z<sub>α/2</sub> · √(p̂(1 − p̂)/n)', n: 'Use p̂ in the variance for estimation.' },
-  { w: 6, t: 'Z test for a proportion', f: 'z = (p̂ − p₀) / √(p₀(1 − p₀)/n)', n: 'Use p₀ in the variance for testing.' },
-  { w: 6, t: 'CI for σ²', f: '(n − 1)s² / χ²<sub>α/2</sub>  <  σ²  <  (n − 1)s² / χ²<sub>1−α/2</sub>', n: 'Not symmetric around s².' },
-  { w: 6, t: 'Two means, σ known', f: 'Z = [(x̄₁ − x̄₂) − d₀] / √(σ₁²/n₁ + σ₂²/n₂)', n: 'Independent samples.' },
-  { w: 6, t: 'Pooled variance', f: 'S<sub>p</sub>² = [(n₁ − 1)s₁² + (n₂ − 1)s₂²] / (n₁ + n₂ − 2)', n: 'Weights = degrees of freedom.' },
-  { w: 6, t: 'Pooled t statistic', f: 't = [(x̄₁ − x̄₂) − d₀] / (S<sub>p</sub> √(1/n₁ + 1/n₂)),   df = n₁ + n₂ − 2', n: 'Variances unknown but equal.' },
-  { w: 6, t: 'F test for two variances', f: 'F = s₁² / s₂²,   df = (n₁ − 1, n₂ − 1)', n: 'Two-tailed needs two critical values (F not symmetric).' },
+  { w: 6, t: T`CI for $\mu$ ($\sigma$ known)`, f: T`\bar{x} \pm z_{\alpha/2}\,\frac{\sigma}{\sqrt{n}}`, n: T`95% uses $z = 1.96$.` },
+  { w: 6, t: T`CI for $\mu$ ($\sigma$ unknown)`, f: T`\bar{x} \pm t_{\alpha/2}\,\frac{s}{\sqrt{n}}, \quad \nu = n-1`, n: T`Same shape: $s$ and $t$ replace $\sigma$ and $z$.` },
+  { w: 6, t: 'Margin of error', f: T`E = z_{\alpha/2}\,\frac{\sigma}{\sqrt{n}}`, n: T`Half the width of the interval.` },
+  { w: 6, t: 'Sample size for a given E', f: T`n = \left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^2`, n: T`Always round UP.` },
+  { w: 6, t: 'CI for a proportion', f: T`\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}`, n: T`Estimating: use $\hat{p}$ inside the root.` },
+  { w: 6, t: 'Z test for a proportion', f: T`z = \frac{\hat{p} - p_0}{\sqrt{p_0(1-p_0)/n}}`, n: T`Testing: use $p_0$ inside the root.` },
+  { w: 6, t: T`CI for $\sigma^2$`, f: [T`\text{lower} = \frac{(n-1)s^2}{\chi^2_{\alpha/2}}`, T`\text{upper} = \frac{(n-1)s^2}{\chi^2_{1-\alpha/2}}`], n: T`Not symmetric around $s^2$. The bigger $\chi^2$ value gives the lower limit.` },
+  { w: 6, t: T`Two means, $\sigma$ known`, f: T`Z = \frac{(\bar{x}_1 - \bar{x}_2) - d_0}{\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}}`, n: T`$d_0$ = the difference claimed by $H_0$ (often 0). Independent samples.` },
+  { w: 6, t: 'Pooled variance', f: T`S_p^2 = \frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1 + n_2 - 2}`, n: T`Average of the two variances, weighted by their df.` },
+  { w: 6, t: 'Pooled t statistic', f: [T`t = \frac{(\bar{x}_1 - \bar{x}_2) - d_0}{S_p\sqrt{1/n_1 + 1/n_2}}`, T`\nu = n_1 + n_2 - 2`], n: T`Variances unknown but assumed equal.` },
+  { w: 6, t: 'F test for two variances', f: T`F = \frac{s_1^2}{s_2^2}, \quad \nu = (n_1 - 1,\; n_2 - 1)`, n: T`Two-tailed needs two critical values: $F$ is not symmetric.` },
 );
 
 // ── Week 7: paired samples, robust methods, ANOVA concepts, one-way ANOVA ──
@@ -415,13 +417,13 @@ QUIZ.push(
     why: 'If H₀ is false, E(MS<sub>Treatment</sub>) > σ², so F gets large. Right-tail test.' },
 );
 CARDS.push(
-  { w: 7, t: 'Paired t statistic', f: 't = (d̄ − δ₀) / (s<sub>d</sub>/√n),   df = n − 1', n: 'd = difference within each pair.' },
-  { w: 7, t: 'Inflated α for k tests', f: 'P(no false rejection) = (1 − α)ᵏ', n: '10 tests at 0.05 → 0.60 → overall α ≈ 0.40.' },
-  { w: 7, t: 'ANOVA identity', f: 'SST = SS<sub>Treatments</sub> + SSE', n: 'Total = between + within.' },
-  { w: 7, t: 'Sums of squares (one-way)', f: 'SST = ΣΣ (yᵢⱼ − ȳ..)²<br>SS<sub>Tr</sub> = n Σ (ȳᵢ. − ȳ..)²<br>SSE = ΣΣ (yᵢⱼ − ȳᵢ.)²', n: 'a levels, n per level, N = an.' },
-  { w: 7, t: 'ANOVA degrees of freedom', f: 'N − 1 = (a − 1) + (N − a)', n: 'Total = treatments + error.' },
-  { w: 7, t: 'Mean squares', f: 'MS<sub>Tr</sub> = SS<sub>Tr</sub>/(a − 1)<br>MSE = SSE/(N − a)', n: 'MSE = pooled estimate of σ².' },
-  { w: 7, t: 'ANOVA F test', f: 'F₀ = MS<sub>Tr</sub> / MSE', n: 'Reject H₀ if F₀ > F<sub>α, a−1, N−a</sub>.' },
+  { w: 7, t: 'Paired t statistic', f: T`t = \frac{\bar{d} - \delta_0}{s_d/\sqrt{n}}, \quad \nu = n-1`, n: T`$d$ = difference within each pair. Then it is a one-sample t test.` },
+  { w: 7, t: T`Inflated $\alpha$ for k tests`, f: [T`P(\text{no false rejection}) = (1-\alpha)^k`, T`\text{overall } \alpha = 1 - (1-\alpha)^k`], n: T`10 tests at 0.05: $0.95^{10} \approx 0.60$, so overall $\alpha \approx 0.40$.` },
+  { w: 7, t: 'ANOVA identity', f: T`\text{SST} = \text{SS}_\text{Tr} + \text{SSE}`, n: T`Total = between groups + within groups.` },
+  { w: 7, t: 'Sums of squares (one-way)', f: [T`\text{SST} = \sum_i \sum_j (y_{ij} - \bar{y}_{..})^2`, T`\text{SS}_\text{Tr} = n \sum_i (\bar{y}_{i.} - \bar{y}_{..})^2`, T`\text{SSE} = \sum_i \sum_j (y_{ij} - \bar{y}_{i.})^2`], n: T`$\bar{y}_{..}$ = grand mean, $\bar{y}_{i.}$ = mean of level $i$. $a$ levels, $n$ each, $N = an$.` },
+  { w: 7, t: 'ANOVA degrees of freedom', f: T`N - 1 = (a - 1) + (N - a)`, n: T`Total = treatments + error.` },
+  { w: 7, t: 'Mean squares', f: [T`\text{MS}_\text{Tr} = \frac{\text{SS}_\text{Tr}}{a-1}`, T`\text{MSE} = \frac{\text{SSE}}{N-a}`], n: T`Mean square = SS ÷ its df. MSE estimates $\sigma^2$.` },
+  { w: 7, t: 'ANOVA F test', f: T`F_0 = \frac{\text{MS}_\text{Tr}}{\text{MSE}}`, n: T`Reject $H_0$ if $F_0 > F_{\alpha,\,a-1,\,N-a}$.` },
 );
 
 // ── Week 8: ANOVA examples & unbalanced data, correlation (Pearson, Spearman, χ²), regression intro ──
@@ -468,12 +470,12 @@ QUIZ.push(
     why: 'Statistical learning learns population parameters under assumptions; ML learns models y = f(x) from lots of data.' },
 );
 CARDS.push(
-  { w: 8, t: 'Unbalanced ANOVA shortcuts', f: 'SST = ΣΣ yᵢⱼ² − T²/N<br>SS<sub>Tr</sub> = Σ Tᵢ²/nᵢ − T²/N<br>SSE = SST − SS<sub>Tr</sub>', n: 'Tᵢ = total of level i, T = grand total.' },
-  { w: 8, t: "Pearson's r", f: 'r = Σ(Xᵢ − X̄)(Yᵢ − Ȳ) / √[Σ(Xᵢ − X̄)² · Σ(Yᵢ − Ȳ)²]', n: '= cov(X, Y) / (σ<sub>X</sub> σ<sub>Y</sub>). Range −1 to +1.' },
-  { w: 8, t: 'Significance test for r', f: 't = r√(n − 2) / √(1 − r²),   df = n − 2', n: 'H₀: ρ = 0.' },
-  { w: 8, t: "Spearman's rank correlation", f: 'r<sub>s</sub> = 1 − 6Σdᵢ² / [n(n² − 1)]', n: 'dᵢ = rank difference in pair i.' },
-  { w: 8, t: 'χ² test of independence', f: 'χ² = ΣΣ (oᵢⱼ − eᵢⱼ)² / eᵢⱼ,   df = (m − 1)(n − 1)', n: 'eᵢⱼ = row total × column total / N.' },
-  { w: 8, t: "Cramér's V", f: 'V = √[ (χ²/n) / (k − 1) ]', n: 'k = smaller of #rows, #columns. Strength of association.' },
+  { w: 8, t: 'Unbalanced ANOVA shortcuts', f: [T`\text{SST} = \sum \sum y_{ij}^2 - \frac{T^2}{N}`, T`\text{SS}_\text{Tr} = \sum \frac{T_i^2}{n_i} - \frac{T^2}{N}`, T`\text{SSE} = \text{SST} - \text{SS}_\text{Tr}`], n: T`$T_i$ = total of level $i$, $T$ = grand total.` },
+  { w: 8, t: "Pearson's r", f: [T`r = \frac{\text{cov}(X, Y)}{\sigma_X\,\sigma_Y}`, T`r = \frac{S_{xy}}{\sqrt{S_{xx}\,S_{yy}}}`], n: T`$S_{xy} = \sum(x_i - \bar{x})(y_i - \bar{y})$, $S_{xx} = \sum(x_i - \bar{x})^2$. Range $-1$ to $+1$.` },
+  { w: 8, t: 'Significance test for r', f: T`t = \frac{r\sqrt{n-2}}{\sqrt{1-r^2}}, \quad \nu = n-2`, n: T`Tests $H_0: \rho = 0$.` },
+  { w: 8, t: "Spearman's rank correlation", f: T`r_s = 1 - \frac{6\sum d_i^2}{n(n^2-1)}`, n: T`$d_i$ = difference in ranks for pair $i$.` },
+  { w: 8, t: T`$\chi^2$ test of independence`, f: [T`\chi^2 = \sum \frac{(o - e)^2}{e}`, T`\nu = (r-1)(c-1)`], n: T`$e$ = row total × column total ÷ grand total. $r$ rows, $c$ columns.` },
+  { w: 8, t: "Cramér's V", f: T`V = \sqrt{\frac{\chi^2}{n\,(k-1)}}`, n: T`$k$ = smaller of rows or columns. 0 = no link, 1 = perfect link.` },
 );
 
 // ── Week 9: simple/multiple/polynomial regression, R², tutorial, time series & AR, logistic intro ──
@@ -523,16 +525,16 @@ QUIZ.push(
     why: 'Above the cut-off → one class, below → the other.' },
 );
 CARDS.push(
-  { w: 9, t: 'Least squares slope & intercept', f: 'b = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²<br>a = ȳ − b·x̄', n: 'Fitted line ŷ = a + bx.' },
-  { w: 9, t: 'Residual & SSE', f: 'eᵢ = yᵢ − ŷᵢ<br>SSE = Σ eᵢ²', n: 'Least squares minimises SSE.' },
-  { w: 9, t: 'Coefficient of determination', f: 'R² = 1 − SSE/SST,   SST = Σ(yᵢ − ȳ)²', n: 'Perfect fit → 1. Useless fit → 0.' },
-  { w: 9, t: 'Multiple linear regression', f: 'ŷ = b₀ + b₁x₁ + b₂x₂ + … + bₖxₖ', n: 'k + 1 normal equations.' },
-  { w: 9, t: 'Polynomial regression', f: 'ŷ = b₀ + b₁x + b₂x² + … + bᵣxʳ', n: 'Needs n ≥ r + 1 observations.' },
-  { w: 9, t: 'j-th autocorrelation', f: 'ρⱼ = Cov(Yₜ, Yₜ₋ⱼ) / (σ<sub>Yₜ</sub> σ<sub>Yₜ₋ⱼ</sub>)', n: 'Correlation with its own lag j.' },
-  { w: 9, t: 'Time-series transforms', f: 'First difference: Yₜ − Yₜ₋₁<br>Log difference: ln Yₜ − ln Yₜ₋₁<br>% change: (Yₜ − Yₜ₋₁)/Yₜ₋₁ × 100', n: 'Slide p102 prints the % formula inverted.' },
-  { w: 9, t: 'AR(p) model', f: 'Yₜ = β₀ + Σᵢ₌₁ᵖ βᵢ Yₜ₋ᵢ + εₜ', n: 'εₜ = Gaussian white noise. AR(1): Yₜ = β₀ + β₁Yₜ₋₁ + εₜ.' },
-  { w: 9, t: 'Logistic function', f: 'p = e<sup>t</sup> / (1 + e<sup>t</sup>),   t = β₀ + β₁x₁ + … + βₘxₘ', n: 'Output always between 0 and 1.' },
-  { w: 9, t: 'Odds and logit', f: 'odds = p / (1 − p) = e<sup>t</sup><br>logit t = ln(odds)', n: 'Logit is linear in the predictors.' },
+  { w: 9, t: 'Least squares slope & intercept', f: [T`b = \frac{S_{xy}}{S_{xx}}`, T`a = \bar{y} - b\,\bar{x}`], n: T`Fitted line $\hat{y} = a + bx$. $S_{xy} = \sum(x_i - \bar{x})(y_i - \bar{y})$, $S_{xx} = \sum(x_i - \bar{x})^2$.` },
+  { w: 9, t: 'Residual & SSE', f: [T`e_i = y_i - \hat{y}_i`, T`\text{SSE} = \sum e_i^2`], n: T`Least squares picks the line with the smallest SSE.` },
+  { w: 9, t: 'Coefficient of determination', f: T`R^2 = 1 - \frac{\text{SSE}}{\text{SST}}`, n: T`SST $= \sum(y_i - \bar{y})^2$. Perfect fit = 1, useless fit = 0.` },
+  { w: 9, t: 'Multiple linear regression', f: T`\hat{y} = b_0 + b_1 x_1 + \dots + b_k x_k`, n: T`$k$ predictors, solved with $k + 1$ normal equations.` },
+  { w: 9, t: 'Polynomial regression', f: T`\hat{y} = b_0 + b_1 x + b_2 x^2 + \dots + b_r x^r`, n: T`Needs at least $r + 1$ observations.` },
+  { w: 9, t: 'j-th autocorrelation', f: T`\rho_j = \frac{\text{Cov}(Y_t, Y_{t-j})}{\sigma_{Y_t}\,\sigma_{Y_{t-j}}}`, n: T`Correlation of the series with itself $j$ steps back.` },
+  { w: 9, t: 'Time-series transforms', f: [T`\text{first difference} = Y_t - Y_{t-1}`, T`\text{log difference} = \ln Y_t - \ln Y_{t-1}`, T`\%\text{ change} = \frac{Y_t - Y_{t-1}}{Y_{t-1}} \times 100`], n: T`Slide p102 prints the % formula upside down.` },
+  { w: 9, t: 'AR(p) model', f: T`\begin{aligned} Y_t = {} &\beta_0 + \beta_1 Y_{t-1} + \dots \\ &+ \beta_p Y_{t-p} + \varepsilon_t \end{aligned}`, n: T`Today depends on the last $p$ values. $\varepsilon_t$ = Gaussian white noise. AR(1): $Y_t = \beta_0 + \beta_1 Y_{t-1} + \varepsilon_t$.` },
+  { w: 9, t: 'Logistic function', f: [T`p = \frac{e^t}{1 + e^t}`, T`t = \beta_0 + \beta_1 x_1 + \dots + \beta_m x_m`], n: T`$p$ always stays between 0 and 1.` },
+  { w: 9, t: 'Odds and logit', f: [T`\text{odds} = \frac{p}{1-p} = e^t`, T`t = \ln(\text{odds})`], n: T`The logit $t$ is a straight line in the predictors.` },
 );
 
 // ── Week 10: logistic regression (binary, many variables, multinomial), tutorial, classification, Bayes intro ──
@@ -589,12 +591,12 @@ QUIZ.push(
     why: 'Strong simplifying assumptions, yet empirically useful and scales well.' },
 );
 CARDS.push(
-  { w: 10, t: 'Logistic curve (location–scale)', f: 'p(x) = 1 / (1 + e<sup>−(x − μ)/s</sup>)<br>β₀ = −μ/s,  β₁ = 1/s', n: 'p(μ) = 1/2.' },
-  { w: 10, t: 'Likelihood (binary logistic)', f: 'L = Π<sub>y=1</sub> pᵢ · Π<sub>y=0</sub> (1 − pᵢ)', n: 'Maximise L (or ln L).' },
-  { w: 10, t: 'Log-likelihood', f: 'ℓ = Σ [ yᵢ ln pᵢ + (1 − yᵢ) ln(1 − pᵢ) ]', n: 'Set ∂ℓ/∂β = 0, solve numerically.' },
-  { w: 10, t: 'Sigmoid function', f: 'S(t) = 1 / (1 + e<sup>−t</sup>)', n: 'S(0) = 1/2,  S(∞) = 1,  S(−∞) = 0.' },
-  { w: 10, t: 'Multinomial logistic probabilities', f: 'pₙ = e<sup>βₙ·x</sup> / (1 + Σᵤ e<sup>βᵤ·x</sup>)<br>p₀ = 1 / (1 + Σᵤ e<sup>βᵤ·x</sup>)', n: 'Sum over all categories = 1.' },
-  { w: 10, t: 'Pivot log-odds', f: 'tₙ = ln(pₙ / p₀) = βₙ · x', n: 'Each category relative to the pivot.' },
+  { w: 10, t: 'Logistic curve (location–scale)', f: [T`p(x) = \frac{1}{1 + e^{-(x-\mu)/s}}`, T`\beta_0 = -\frac{\mu}{s}, \quad \beta_1 = \frac{1}{s}`], n: T`At $x = \mu$, $p = 1/2$.` },
+  { w: 10, t: 'Likelihood (binary logistic)', f: T`L = \prod_{y_i = 1} p_i \prod_{y_i = 0} (1 - p_i)`, n: T`Pick the $\beta$s that make $L$ (or $\ln L$) as large as possible.` },
+  { w: 10, t: 'Log-likelihood', f: T`\begin{aligned} \ell = \sum \big[\, &y_i \ln p_i \\ &+ (1 - y_i) \ln(1 - p_i) \,\big] \end{aligned}`, n: T`Set $\partial \ell / \partial \beta = 0$ and solve numerically.` },
+  { w: 10, t: 'Sigmoid function', f: T`S(t) = \frac{1}{1 + e^{-t}}`, n: T`$S(0) = 1/2$. $S \to 1$ as $t \to \infty$, $S \to 0$ as $t \to -\infty$.` },
+  { w: 10, t: 'Multinomial logistic probabilities', f: [T`p_n = \frac{e^{\beta_n \cdot x}}{1 + \sum_u e^{\beta_u \cdot x}}`, T`p_0 = \frac{1}{1 + \sum_u e^{\beta_u \cdot x}}`], n: T`$p_0$ = the pivot category. All the probabilities add to 1.` },
+  { w: 10, t: 'Pivot log-odds', f: T`t_n = \ln \frac{p_n}{p_0} = \beta_n \cdot x`, n: T`Each category compared with the pivot.` },
 );
 
 // ── Week 11: Naive Bayes II, M-estimate, kNN, tutorial, SVM I & II ──
@@ -646,17 +648,17 @@ QUIZ.push(
     why: 'Inequality constraints → Lagrangian plus KKT conditions.' },
 );
 CARDS.push(
-  { w: 11, t: 'Bayes for classification', f: 'P(Y|X) ∝ P(X|Y) · P(Y)', n: 'P(X) (evidence) is constant across classes.' },
-  { w: 11, t: 'Naïve Bayes score', f: 'pᵢ = P(Cᵢ) × Πⱼ P(Aⱼ = aⱼ | Cᵢ)', n: 'Choose the class with the max pᵢ.' },
-  { w: 11, t: 'M-estimate', f: 'P(Aⱼ = x | Cᵢ) = (n<sub>c</sub> + m·p) / (n + m)', n: 'm = equivalent sample size, p = prior estimate (uniform 1/k).' },
-  { w: 11, t: 'Gaussian likelihood (continuous attribute)', f: 'P(Aⱼ = x | Cᵢ) = (1/√(2π)σᵢⱼ) e<sup>−(x − μᵢⱼ)² / 2σᵢⱼ²</sup>', n: 'μᵢⱼ, σᵢⱼ² from training records of class Cᵢ.' },
-  { w: 11, t: 'Euclidean distance', f: 'd = √Σ (xᵢ − yᵢ)²', n: 'Default distance for kNN.' },
-  { w: 11, t: 'Manhattan distance', f: 'd = Σ |xᵢ − yᵢ|', n: 'Used in tutorial T11.14.' },
-  { w: 11, t: 'kNN choice of k', f: 'k ≈ √N  (odd for two classes)', n: 'N = number of training samples.' },
-  { w: 11, t: 'SVM hyperplane & decision', f: 'W·X + b = 0<br>Y = + if W·X + b > 0,  − if < 0', n: 'W = orientation, b = intercept.' },
-  { w: 11, t: 'SVM margin', f: 'd = 2 / ‖W‖,   ‖W‖ = √(w₁² + … + wₘ²)', n: 'Distance between W·X + b = +1 and −1.' },
-  { w: 11, t: 'Linear SVM optimisation', f: 'minimise ‖W‖²/2<br>subject to yᵢ(W·xᵢ + b) ≥ 1', n: 'Maximising 2/‖W‖ ⇔ minimising ‖W‖²/2.' },
-  { w: 11, t: 'Lagrangian & KKT', f: 'L = f(x) + Σ λᵢ hᵢ(x)<br>∂L/∂x = 0,  λᵢ ≥ 0,  hᵢ(x) ≤ 0,  λᵢhᵢ(x) = 0', n: 'KKT conditions for inequality constraints.' },
+  { w: 11, t: 'Bayes for classification', f: T`P(Y \mid X) \propto P(X \mid Y)\,P(Y)`, n: T`$P(X)$ (the evidence) is the same for every class, so drop it.` },
+  { w: 11, t: 'Naïve Bayes score', f: T`p_i = P(C_i) \prod_j P(A_j = a_j \mid C_i)`, n: T`Attributes assumed independent. Choose the class with the largest $p_i$.` },
+  { w: 11, t: 'M-estimate', f: T`P(A_j = x \mid C_i) = \frac{n_c + m\,p}{n + m}`, n: T`$m$ = equivalent sample size, $p$ = prior guess (uniform $1/k$). Stops zero probabilities.` },
+  { w: 11, t: 'Gaussian likelihood (continuous attribute)', f: [T`P(A_j = x \mid C_i) = \frac{1}{\sigma_{ij}\sqrt{2\pi}}\,e^{-z^2/2}`, T`z = \frac{x - \mu_{ij}}{\sigma_{ij}}`], n: T`$\mu_{ij}$ and $\sigma_{ij}^2$ come from the training records of class $C_i$.` },
+  { w: 11, t: 'Euclidean distance', f: T`d = \sqrt{\sum (x_i - y_i)^2}`, n: T`Straight-line distance. The default for kNN.` },
+  { w: 11, t: 'Manhattan distance', f: T`d = \sum |x_i - y_i|`, n: T`City-block distance. Used in tutorial T11.14.` },
+  { w: 11, t: 'kNN choice of k', f: T`k \approx \sqrt{N}`, n: T`$N$ = number of training samples. Use an odd $k$ for two classes.` },
+  { w: 11, t: 'SVM hyperplane & decision', f: [T`W \cdot X + b = 0`, T`\text{class} = \begin{cases} + & \text{if } W \cdot X + b > 0 \\ - & \text{if } W \cdot X + b < 0 \end{cases}`], n: T`$W$ sets the direction, $b$ the offset.` },
+  { w: 11, t: 'SVM margin', f: [T`d = \frac{2}{\lVert W \rVert}`, T`\lVert W \rVert = \sqrt{w_1^2 + \dots + w_m^2}`], n: T`Gap between the lines $W \cdot X + b = +1$ and $-1$.` },
+  { w: 11, t: 'Linear SVM optimisation', f: [T`\text{minimise } \frac{\lVert W \rVert^2}{2}`, T`\text{subject to } y_i(W \cdot x_i + b) \ge 1`], n: T`Maximising $2/\lVert W \rVert$ is the same as minimising $\lVert W \rVert^2/2$.` },
+  { w: 11, t: 'Lagrangian & KKT', f: [T`L = f(x) + \sum \lambda_i h_i(x)`, T`\frac{\partial L}{\partial x} = 0, \quad \lambda_i \ge 0`, T`h_i(x) \le 0, \quad \lambda_i h_i(x) = 0`], n: T`KKT conditions for inequality constraints.` },
 );
 
 // ── Week 12: solving linear SVM, multi-class SVM, non-linear SVM, dual form, kernel trick, tutorial ──
@@ -706,12 +708,12 @@ QUIZ.push(
     why: 'SVM is a supervised method (T12.1) whose goal is the maximum-margin hyperplane (T12.4).' },
 );
 CARDS.push(
-  { w: 12, t: 'SVM stationarity (KKT) results', f: 'W = Σ λᵢ yᵢ xᵢ<br>Σ λᵢ yᵢ = 0,   λᵢ ≥ 0', n: 'Only support vectors have λᵢ > 0.' },
-  { w: 12, t: 'SVM classifier (dual form)', f: 'δ(X) = Σ λᵢ yᵢ (xᵢ · X) + b', n: 'Sign of δ(X) gives the class.' },
-  { w: 12, t: 'Dual Lagrangian', f: 'L<sub>D</sub> = Σ λᵢ − ½ ΣΣ λᵢλⱼ yᵢyⱼ (xᵢ · xⱼ)', n: 'Maximise, subject to λᵢ ≥ 0, Σ λᵢyᵢ = 0.' },
-  { w: 12, t: 'Kernel function', f: 'K(Xᵢ, Xⱼ) = φ(Xᵢ) · φ(Xⱼ)', n: 'Kernelised classifier: δ(X) = Σ λᵢ yᵢ K(Xᵢ, X) + b.' },
-  { w: 12, t: 'Linear & polynomial kernels', f: 'Linear: K = XᵀY<br>Polynomial: K = (XᵀY + 1)ᵖ', n: 'p chosen a priori by the user.' },
-  { w: 12, t: 'Gaussian RBF & Laplacian kernels', f: 'RBF: K = e<sup>−‖X − Y‖² / 2σ²</sup><br>Laplacian: K = e<sup>−λ‖X − Y‖</sup>', n: 'Non-linear similarity measures.' },
-  { w: 12, t: 'Sigmoid kernel', f: 'K = tanh(β₀ XᵀY + β₁)', n: 'Also listed: Mahalanobis K = e<sup>−(X − Y)ᵀA(X − Y)</sup>.' },
-  { w: 12, t: 'Multi-class SVM counts', f: 'OVO: ⁿC₂ = n(n − 1)/2 classifiers<br>OVA: n classifiers', n: 'n = number of classes.' },
+  { w: 12, t: 'SVM stationarity (KKT) results', f: [T`W = \sum \lambda_i y_i x_i`, T`\sum \lambda_i y_i = 0, \quad \lambda_i \ge 0`], n: T`Only support vectors have $\lambda_i > 0$.` },
+  { w: 12, t: 'SVM classifier (dual form)', f: T`\delta(X) = \sum \lambda_i y_i\,(x_i \cdot X) + b`, n: T`The sign of $\delta(X)$ gives the class.` },
+  { w: 12, t: 'Dual Lagrangian', f: T`\begin{aligned} L_D = {} &\sum_i \lambda_i \\ &- \tfrac{1}{2} \sum_{i,j} \lambda_i \lambda_j\, y_i y_j\,(x_i \cdot x_j) \end{aligned}`, n: T`Maximise it, with $\lambda_i \ge 0$ and $\sum \lambda_i y_i = 0$.` },
+  { w: 12, t: 'Kernel function', f: [T`K(X_i, X_j) = \varphi(X_i) \cdot \varphi(X_j)`, T`\delta(X) = \sum \lambda_i y_i\,K(X_i, X) + b`], n: T`A dot product in a bigger space, computed without going there.` },
+  { w: 12, t: 'Linear & polynomial kernels', f: [T`\text{linear: } K = X^\top Y`, T`\text{polynomial: } K = (X^\top Y + 1)^p`], n: T`$p$ is chosen by the user beforehand.` },
+  { w: 12, t: 'Gaussian RBF & Laplacian kernels', f: [T`\text{RBF: } K = e^{-\lVert X - Y \rVert^2 / (2\sigma^2)}`, T`\text{Laplacian: } K = e^{-\lambda \lVert X - Y \rVert}`], n: T`Similarity: 1 when $X = Y$, falling toward 0 as they move apart.` },
+  { w: 12, t: 'Sigmoid kernel', f: T`K = \tanh(\beta_0\, X^\top Y + \beta_1)`, n: T`Also listed: Mahalanobis $K = e^{-(X - Y)^\top A\,(X - Y)}$.` },
+  { w: 12, t: 'Multi-class SVM counts', f: [T`\text{OVO: } \binom{n}{2} = \frac{n(n-1)}{2} \text{ classifiers}`, T`\text{OVA: } n \text{ classifiers}`], n: T`$n$ = number of classes.` },
 );
