@@ -52,7 +52,8 @@
     .mode button[aria-pressed=false]:hover, .weeks button[aria-pressed=false]:hover { background: var(--field-dark); }
   }
 
-  .sheet { background: var(--paper); padding: var(--pad); min-height: calc(100dvh - 100px); }
+  /* svh, not dvh: dvh grows as the phone's address bar hides, which stretched the sheet mid-scroll */
+  .sheet { background: var(--paper); padding: var(--pad); min-height: calc(100svh - 100px); }
   .meta { display: flex; justify-content: space-between; gap: 12px; font-size: var(--step-small); color: var(--muted); margin: 0 0 12px; }
   .bar { height: 6px; background: var(--surface); }
   .bar i { display: block; height: 100%; background: var(--ink); }
